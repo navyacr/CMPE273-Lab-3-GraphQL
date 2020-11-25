@@ -1,1 +1,1 @@
-# CMPE273-Lab-3-GraphQL
+# Yelp_Lab1_CMPE273

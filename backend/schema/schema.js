@@ -1,5 +1,7 @@
 const graphql = require("graphql");
 const Model = require("../models/restaurants.model.mongo");
+const customersModel = require("../models/customers.model.mongo");
+const dishesModel = require("../models/dishes.model.mongo");
 
 const {
   GraphQLObjectType,
@@ -29,6 +31,42 @@ const RestaurantType = new GraphQLObjectType({
   }),
 });
 
+const CustomerType = new GraphQLObjectType({
+  name: "customers",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+    dob: { type: GraphQLString },
+    city: { type: GraphQLString },
+    state: { type: GraphQLString },
+    country: { type: GraphQLString },
+    nickname: { type: GraphQLString },
+    yelpsince: { type: GraphQLString },
+    thingsilove: { type: GraphQLString },
+    findmein: { type: GraphQLString },
+    website: { type: GraphQLString },
+    phonenumber: { type: GraphQLString },
+    filename: { type: GraphQLString },
+    headline: { type: GraphQLString },
+  }),
+});
+
+const DishType = new GraphQLObjectType({
+  name: "dishes",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    ingredients: { type: GraphQLString },
+    filename: { type: GraphQLString },
+    description: { type: GraphQLString },
+    category: { type: GraphQLString },
+    price: { type: GraphQLString },
+    restaurantId: { type: RestaurantType },
+  }),
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   description: "Root Query",
@@ -45,6 +83,21 @@ const RootQuery = new GraphQLObjectType({
       args: {},
       resolve(parent, args) {
         return Model.restaurantsModel.find({});
+      },
+    },
+    getCustomer: {
+      type: CustomerType,
+      args: { id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return customersModel.findById(args.id);
+      },
+    },
+
+    getMenu: {
+      type: DishType,
+      args: { id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return dishesModel.findById(args.id);
       },
     },
   },
