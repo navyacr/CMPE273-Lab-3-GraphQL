@@ -24,51 +24,7 @@ class CustomerProfile extends Component {
     }
 
     const id = localStorage.getItem("customer_id");
-    // this.props.getCustomerInfo();
-    // axios.get(`${backendServer}/customers/${id}/profile`)
-    // .then(response => {
-    //     this.setState({
-    //         name: response.data.updatedList.name,
-    //         email: response.data.updatedList.email,
-    //         customerId: response.data.updatedList._id,
-    //         dob: response.data.updatedList.dob,
-    //         city: response.data.updatedList.city,
-    //         state: response.data.updatedList.state,
-    //         country: response.data.updatedList.country,
-    //         nickname: response.data.updatedList.nickname,
-    //         headline: response.data.updatedList.headline,
-    //         yelpsince: response.data.updatedList.yelpsince.split('T')[0],
-    //         thingsilove: response.data.updatedList.thingsilove,
-    //         findmein: response.data.updatedList.findmein,
-    //         website: response.data.updatedList.website,
-    //         phonenumber: response.data.updatedList.phonenumber,
-    //         customerId: response.data.updatedList._id
-    //     });
-    // });
   };
-
-  // componentWillReceiveProps(props){
-  //   this.setState({
-  //     ...this.state,
-  //     name: props.user.name,
-  //     email: props.user.email,
-  //     customerId: props.user._id,
-  //     dob: props.user.dob,
-  //     city: props.user.city,
-  //     state: props.user.state,
-  //     country: props.user.country,
-  //     nickname: props.user.nickname,
-  //     headline: props.user.headline,
-  //     yelpsince: props.user.yelpsince.split('T')[0],
-  //     thingsilove: props.user.thingsilove,
-  //     findmein: props.user.findmein,
-  //     website: props.user.website,
-  //     phonenumber: props.user.phonenumber,
-  //     customerId: props.user._id
-
-  //   }
-  //  );
-  // }
 
   componentWillReceiveProps(nextProp) {
     console.log("Next prop", nextProp);
@@ -170,21 +126,9 @@ class CustomerProfile extends Component {
   }
 }
 
-// export default CustomerProfile;
-
-// CustomerProfile.propTypes = {
-//   getCustomerInfo: PropTypes.func.isRequired,
-//   user: PropTypes.object.isRequired,
-// };
-
-// const mapStateToProps = (state) => ({
-//   user: state.getCustomerInfo.user,
-// });
-
-// export default connect(mapStateToProps, { getCustomerInfo })(CustomerProfile);
-
 export default graphql(getCustomerOne, {
   options: {
+    // TODO get customer id from localstorage
     variables: { customer_id: "5fa869a36c8d477f85692574" },
   },
 })(CustomerProfile);

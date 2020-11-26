@@ -1,27 +1,13 @@
-const dishesModel = require('../models/dishes.model');
+const dishesModel = require("../models/dishes.model");
 
-function handle_request(msg, callback){
-
-  // let newDish = new dishesModel(msg)
-  
-  // console.log("New dish is", newDish)
-
-  // if (!newDish) {
-  //   callback(null, {message: "Not Done"})
-
-  // }
-  // if (!callback) {
-  //   return newDish
-  // }
-  
+function handle_request(msg, callback) {
   dishesModel.find({ restaurantId: msg.restaurantId }, (error, dishes) => {
-      if (error) {
-          callback(error, {"status": "error"})
-      }
-      if (dishes) {
-        callback(null, dishes)  
-      }
-      
+    if (error) {
+      callback(error, { status: "error" });
+    }
+    if (dishes) {
+      callback(null, dishes);
+    }
   });
 }
 

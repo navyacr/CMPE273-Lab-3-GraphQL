@@ -2,6 +2,8 @@ const graphql = require("graphql");
 const Model = require("../models/restaurants.model.mongo");
 const customersModel = require("../models/customers.model.mongo");
 const dishesModel = require("../models/dishes.model.mongo");
+const ordersModel = require("../models/orders.model.mongo");
+// const { GraphQLDateTime } = require('graphql-iso-date')
 
 const {
   GraphQLObjectType,
@@ -67,13 +69,27 @@ const DishType = new GraphQLObjectType({
   }),
 });
 
+const OrderType = new GraphQLObjectType({
+  name: "orders",
+  fields: () => ({
+    id: { type: GraphQLID },
+    customerId: { type: CustomerType },
+    restaurantId: { type: RestaurantType },
+    dishId: { type: DishType },
+    qty: { type: GraphQLString },
+    dm: { type: GraphQLString },
+    status: { type: GraphQLString },
+    date: { type: GraphQLString },
+  }),
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   description: "Root Query",
   fields: {
     getRestaurant: {
       type: RestaurantType,
-      args: { id: { type: GraphQLID } },
+      args: { id: { type: GraphQLString } },
       resolve(parent, args) {
         return Model.restaurantsModel.findById(args.id);
       },
@@ -94,10 +110,21 @@ const RootQuery = new GraphQLObjectType({
     },
 
     getMenu: {
-      type: DishType,
+      type: new GraphQLList(DishType),
       args: { id: { type: GraphQLString } },
       resolve(parent, args) {
-        return dishesModel.findById(args.id);
+        return dishesModel.find({ restaurantId: args.id });
+      },
+    },
+    getOrders: {
+      type: new GraphQLList(OrderType),
+      args: { id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return ordersModel
+          .find({ customerId: args.id })
+          .populate("customerId")
+          .populate("restaurantId")
+          .populate("dishId");
       },
     },
   },
