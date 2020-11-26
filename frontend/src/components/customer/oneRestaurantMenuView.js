@@ -6,7 +6,7 @@ import { Card } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 import "../restaurant/pagination.css";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+// import { connect } from "react-redux";
 // import { getRestaurantMenu } from "../../actions/customerHomeActions";
 import { placeOrder } from "../../actions/customerHomeActions";
 import { getRestaurantMenu } from "../../queries/queries";

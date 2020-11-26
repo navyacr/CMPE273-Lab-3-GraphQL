@@ -5,7 +5,7 @@ import backendServer from "../../config";
 import CustomerLoginCheck from "./customerLoginCheck";
 import OneRestaurantMenuView from "./oneRestaurantMenuView";
 // import CustomerAddReview from "./customerAddReview";
-// import CustomerViewReview from "./customerViewReview";
+import CustomerViewReview from "./customerViewReview";
 import Dropdown from "react-dropdown";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -59,7 +59,7 @@ class OneRestaurantView extends Component {
     var imgsrc = `${backendServer}/restaurants/${this.props.match.params.resid}/viewProfileImage`;
     return (
       <div>
-        <CustomerLoginCheck />
+        {/* <CustomerLoginCheck /> */}
         <div class="restaurantHome">
           <h2 style={{ color: "maroon" }}>
             {" "}
@@ -107,8 +107,9 @@ class OneRestaurantView extends Component {
             dm={this.state.selectedDm}
             resid={this.props.match.params.resid}
           />
-          {/* <CustomerAddReview resid={this.props.match.params.resid} />
-          <CustomerViewReview resid={this.props.match.params.resid} /> */}
+          {/* <CustomerAddReview resid={this.props.match.params.resid} /> */}
+          {/* <CustomerViewReview resid={this.props.match.params.resid} /> */}
+          <CustomerViewReview resid="5fa85cdb0f0d477c9147c39f" />
         </div>
       </div>
     );

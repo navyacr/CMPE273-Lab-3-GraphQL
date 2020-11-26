@@ -30,6 +30,23 @@ const RestaurantType = new GraphQLObjectType({
     cuisine: { type: GraphQLString },
     deliverymode: { type: GraphQLString },
     email: { type: GraphQLString },
+    reviews: {
+      type: new GraphQLList(ReviewType),
+      resolve(parent, args) {
+        return parent.reviews;
+      },
+    },
+  }),
+});
+const ReviewType = new GraphQLObjectType({
+  name: "reviews",
+  fields: () => ({
+    id: { type: GraphQLID },
+    rating: { type: GraphQLInt },
+    date: { type: GraphQLString },
+    description: { type: GraphQLString },
+    customerId: { type: CustomerType },
+    customerName: { type: GraphQLString },
   }),
 });
 

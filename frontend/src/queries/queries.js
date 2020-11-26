@@ -24,6 +24,12 @@ const getRestaurantOne = gql`
       email
       contact
       location
+      reviews {
+        rating
+        description
+        customerName
+        date
+      }
     }
   }
 `;
