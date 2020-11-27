@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from 'apollo-boost';
 
 const getRestaurantAll = gql`
   {
@@ -89,10 +89,35 @@ const getOrdersCustomer = gql`
     }
   }
 `;
+
+const getRestaurantOrders = gql`
+  query($restaurant_id: String) {
+    getRestaurantOrders(id: $restaurant_id) {
+      dm
+      qty
+      status
+      date
+      dishId {
+        id
+        name
+        price
+      }
+      customerId {
+        id
+        email
+        name
+      }
+      restaurantId {
+        name
+      }
+    }
+  }
+`;
 export {
   getRestaurantAll,
   getCustomerOne,
   getOrdersCustomer,
   getRestaurantOne,
   getRestaurantMenu,
+  getRestaurantOrders,
 };

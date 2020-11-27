@@ -1,8 +1,8 @@
-const graphql = require("graphql");
-const Model = require("../models/restaurants.model.mongo");
-const customersModel = require("../models/customers.model.mongo");
-const dishesModel = require("../models/dishes.model.mongo");
-const ordersModel = require("../models/orders.model.mongo");
+const graphql = require('graphql');
+const Model = require('../models/restaurants.model.mongo');
+const customersModel = require('../models/customers.model.mongo');
+const dishesModel = require('../models/dishes.model.mongo');
+const ordersModel = require('../models/orders.model.mongo');
 // const { GraphQLDateTime } = require('graphql-iso-date')
 
 const {
@@ -16,7 +16,7 @@ const {
 } = graphql;
 
 const RestaurantType = new GraphQLObjectType({
-  name: "restaurants",
+  name: 'restaurants',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -39,7 +39,7 @@ const RestaurantType = new GraphQLObjectType({
   }),
 });
 const ReviewType = new GraphQLObjectType({
-  name: "reviews",
+  name: 'reviews',
   fields: () => ({
     id: { type: GraphQLID },
     rating: { type: GraphQLInt },
@@ -51,7 +51,7 @@ const ReviewType = new GraphQLObjectType({
 });
 
 const CustomerType = new GraphQLObjectType({
-  name: "customers",
+  name: 'customers',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -73,7 +73,7 @@ const CustomerType = new GraphQLObjectType({
 });
 
 const DishType = new GraphQLObjectType({
-  name: "dishes",
+  name: 'dishes',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -87,7 +87,7 @@ const DishType = new GraphQLObjectType({
 });
 
 const OrderType = new GraphQLObjectType({
-  name: "orders",
+  name: 'orders',
   fields: () => ({
     id: { type: GraphQLID },
     customerId: { type: CustomerType },
@@ -101,8 +101,8 @@ const OrderType = new GraphQLObjectType({
 });
 
 const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
-  description: "Root Query",
+  name: 'RootQueryType',
+  description: 'Root Query',
   fields: {
     getRestaurant: {
       type: RestaurantType,
@@ -139,9 +139,63 @@ const RootQuery = new GraphQLObjectType({
       resolve(parent, args) {
         return ordersModel
           .find({ customerId: args.id })
-          .populate("customerId")
-          .populate("restaurantId")
-          .populate("dishId");
+          .populate('customerId')
+          .populate('restaurantId')
+          .populate('dishId');
+      },
+    },
+
+    getRestaurantOrders: {
+      type: new GraphQLList(OrderType),
+      args: { id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return ordersModel
+          .find({ restaurantId: args.id })
+          .populate('customerId')
+          .populate('restaurantId')
+          .populate('dishId');
+      },
+    },
+  },
+});
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    updateCustomerProfile: {
+      type: CustomerType,
+      args: {
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt },
+        id: { type: GraphQLID },
+      },
+      resolve(parent, args) {
+        let author = {
+          name: args.name,
+          age: args.age,
+          id: args.id,
+        };
+        authors.push(author);
+        console.log('Authors', authors);
+        return author;
+      },
+    },
+
+    addBook: {
+      type: BookType,
+      args: {
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        authorId: { type: GraphQLID },
+      },
+      resolve(parent, args) {
+        let book = {
+          name: args.name,
+          genre: args.genre,
+          authorId: args.authorId,
+          id: books.length + 1,
+        };
+        books.push(book);
+        return book;
       },
     },
   },
