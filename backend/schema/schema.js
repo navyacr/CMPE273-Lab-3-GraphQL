@@ -4,6 +4,10 @@ const customersModel = require('../models/customers.model.mongo');
 const dishesModel = require('../models/dishes.model.mongo');
 const ordersModel = require('../models/orders.model.mongo');
 // const { GraphQLDateTime } = require('graphql-iso-date')
+// const bcrypt = require('bcrypt');
+// var salt = bcrypt.genSaltSync(10);
+const passwordHash = require('password-hash');
+const { model } = require('../models/customers.model.mongo');
 
 const {
   GraphQLObjectType,
@@ -161,41 +165,102 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    updateCustomerProfile: {
+    addCustomer: {
       type: CustomerType,
       args: {
         name: { type: GraphQLString },
-        age: { type: GraphQLInt },
-        id: { type: GraphQLID },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
       },
       resolve(parent, args) {
-        let author = {
+        let hashedPassword = passwordHash.generate(args.password);
+        const cus = new customersModel({
           name: args.name,
-          age: args.age,
-          id: args.id,
-        };
-        authors.push(author);
-        console.log('Authors', authors);
-        return author;
+          email: args.customer_email,
+          password: hashedPassword,
+        });
+        return cus.save();
+      },
+    },
+    updateCustomer: {
+      type: CustomerType,
+      args: {
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        city: { type: GraphQLString },
+        state: { type: GraphQLString },
+        country: { type: GraphQLString },
+        yelpsince: { type: GraphQLString },
+        findmein: { type: GraphQLString },
+        website: { type: GraphQLString },
+        phonenumber: { type: GraphQLString },
+        headline: { type: GraphQLString },
+        timings: { type: GraphQLString },
+        nickname: { type: GraphQLString },
+        dob: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return customersModel.findByIdAndUpdate(args.id, args);
       },
     },
 
-    addBook: {
-      type: BookType,
+    addRestaurant: {
+      type: RestaurantType,
       args: {
         name: { type: GraphQLString },
-        genre: { type: GraphQLString },
-        authorId: { type: GraphQLID },
+        password: { type: GraphQLString },
+        email: { type: GraphQLString },
+        address: { type: GraphQLString },
       },
       resolve(parent, args) {
-        let book = {
+        let hashedPassword = passwordHash.generate(args.password);
+        const rest = new Model.restaurantsModel({
           name: args.name,
-          genre: args.genre,
-          authorId: args.authorId,
-          id: books.length + 1,
-        };
-        books.push(book);
-        return book;
+          email: args.email,
+          password: hashedPassword,
+          address: args.address,
+        });
+        return rest.save();
+      },
+    },
+
+    updateRestaurant: {
+      type: RestaurantType,
+      args: {
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        address: { type: GraphQLString },
+        description: { type: GraphQLString },
+        contact: { type: GraphQLString },
+        timings: { type: GraphQLString },
+        location: { type: GraphQLString },
+        cuisine: { type: GraphQLString },
+        filename: { type: GraphQLString },
+        deliverymode: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return customersModel.findByIdAndUpdate(args.id, args);
+      },
+    },
+
+    addMenu: {
+      type: DishType,
+      args: {
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        ingredients: { type: GraphQLString },
+        price: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const dish = new dishesModel({
+          name: args.name,
+          description: args.description,
+          ingredients: args.ingredients,
+          price: args.price,
+        });
+        return dish.save();
       },
     },
   },
@@ -203,7 +268,7 @@ const Mutation = new GraphQLObjectType({
 
 const schema = new GraphQLSchema({
   query: RootQuery,
-  // mutation: Mutation
+  mutation: Mutation,
 });
 
 module.exports = schema;
