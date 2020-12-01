@@ -3,11 +3,8 @@ const Model = require('../models/restaurants.model.mongo');
 const customersModel = require('../models/customers.model.mongo');
 const dishesModel = require('../models/dishes.model.mongo');
 const ordersModel = require('../models/orders.model.mongo');
-// const { GraphQLDateTime } = require('graphql-iso-date')
-// const bcrypt = require('bcrypt');
-// var salt = bcrypt.genSaltSync(10);
-const passwordHash = require('password-hash');
-const { model } = require('../models/customers.model.mongo');
+const { customerSignup, restaurantSignup } = require('../mutations/signup');
+const { cusLogin, resLogin } = require('../mutations/login');
 
 const {
   GraphQLObjectType,
@@ -104,6 +101,14 @@ const OrderType = new GraphQLObjectType({
   }),
 });
 
+const StatusType = new GraphQLObjectType({
+  name: 'Status',
+  fields: () => ({
+    status: { type: GraphQLString },
+    message: { type: GraphQLString },
+  }),
+});
+
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   description: 'Root Query',
@@ -166,20 +171,15 @@ const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     addCustomer: {
-      type: CustomerType,
+      type: StatusType,
       args: {
         name: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
+
       resolve(parent, args) {
-        let hashedPassword = passwordHash.generate(args.password);
-        const cus = new customersModel({
-          name: args.name,
-          email: args.customer_email,
-          password: hashedPassword,
-        });
-        return cus.save();
+        return customerSignup(args);
       },
     },
     updateCustomer: {
@@ -206,7 +206,7 @@ const Mutation = new GraphQLObjectType({
     },
 
     addRestaurant: {
-      type: RestaurantType,
+      type: StatusType,
       args: {
         name: { type: GraphQLString },
         password: { type: GraphQLString },
@@ -214,14 +214,7 @@ const Mutation = new GraphQLObjectType({
         address: { type: GraphQLString },
       },
       resolve(parent, args) {
-        let hashedPassword = passwordHash.generate(args.password);
-        const rest = new Model.restaurantsModel({
-          name: args.name,
-          email: args.email,
-          password: hashedPassword,
-          address: args.address,
-        });
-        return rest.save();
+        return restaurantSignup(args);
       },
     },
 
@@ -242,6 +235,26 @@ const Mutation = new GraphQLObjectType({
       },
       resolve(parent, args) {
         return customersModel.findByIdAndUpdate(args.id, args);
+      },
+    },
+    customerLogin: {
+      type: StatusType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return cusLogin(args);
+      },
+    },
+    restaurantLogin: {
+      type: StatusType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return resLogin(args);
       },
     },
 
