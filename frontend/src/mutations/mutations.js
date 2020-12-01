@@ -2,11 +2,20 @@ import { gql } from 'apollo-boost';
 
 const addCustomerMutation = gql`
   mutation AddCustomer($name: String, $email: String, $password: String) {
-    addStudent(name: $name, email: $email, password: $password) {
+    addCustomer(name: $name, email: $email, password: $password) {
       message
       status
     }
   }
 `;
 
-export { addCustomerMutation };
+const customerLoginMutation = gql`
+  mutation cuslogin($email: String, $password: String) {
+    customerLogin(email: $email, password: $password) {
+      message
+      status
+    }
+  }
+`;
+
+export { addCustomerMutation, customerLoginMutation };

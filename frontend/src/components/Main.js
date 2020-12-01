@@ -29,9 +29,9 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Route path='/' component={Login} />
+        <Route path='/' component={Navbar} />
         <Route path='/login' component={Login} />
-        {/* <Route path='/customersSignup' component={CustomersSignup} /> */}
+        <Route path='/customersSignup' component={CustomersSignup} />
         <Route path='/restaurantsSignup' component={restaurantsSignup} />
         <Route path='/restaurantProfile' component={restaurantProfile} />
         <Route

@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 // import { connect } from 'react-redux';
 // import { customersSignup } from '../../actions/customersSignupActions';
 import { addCustomerMutation } from '../../mutations/mutations';
-
 import { graphql } from 'react-apollo';
 
 //Define a Login Component
@@ -29,16 +28,17 @@ class CustomersSignup extends Component {
     });
   };
 
-  onSubmit = (e) => {
+  onSubmit = async (e) => {
     //prevent page from refresh
     e.preventDefault();
-    let mutationResponse = this.props.addCustomerMutation({
+    let mutationResponse = await this.props.addCustomerMutation({
       variables: {
         name: this.state.name,
         email: this.state.email,
         password: this.state.password,
       },
     });
+    console.log('mutationResponse', mutationResponse);
     let response = mutationResponse.data.addCustomer;
     if (response) {
       if (response.status === '200') {
