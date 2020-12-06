@@ -22,6 +22,9 @@ class RestaurantMenu extends Component {
 
   restaurantMenu = () => {
     var data = this.props.data;
+    this.setState({
+      dishes: this.props.data,
+    });
     if (data.loading) {
       console.log('Loading');
     } else {
@@ -133,7 +136,7 @@ class RestaurantMenu extends Component {
 
 export default graphql(getRestaurantMenu, {
   options: {
-    // TODO get customer id from localstorage
-    variables: { restaurant_id: '5fa85cdb0f0d477c9147c39f' },
+    variables: { restaurant_id: localStorage.getItem('restaurant_id') },
+    // fetchPolicy: 'network-only',
   },
 })(RestaurantMenu);

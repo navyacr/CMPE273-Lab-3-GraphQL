@@ -191,12 +191,10 @@ const Mutation = new GraphQLObjectType({
         city: { type: GraphQLString },
         state: { type: GraphQLString },
         country: { type: GraphQLString },
-        yelpsince: { type: GraphQLString },
         findmein: { type: GraphQLString },
         website: { type: GraphQLString },
         phonenumber: { type: GraphQLString },
         headline: { type: GraphQLString },
-        timings: { type: GraphQLString },
         nickname: { type: GraphQLString },
         dob: { type: GraphQLString },
       },
@@ -211,7 +209,7 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
-        address: { type: GraphQLString },
+        location: { type: GraphQLString },
       },
       resolve(parent, args) {
         return restaurantSignup(args);
@@ -224,17 +222,15 @@ const Mutation = new GraphQLObjectType({
         id: { type: GraphQLString },
         name: { type: GraphQLString },
         email: { type: GraphQLString },
-        address: { type: GraphQLString },
+        location: { type: GraphQLString },
         description: { type: GraphQLString },
         contact: { type: GraphQLString },
         timings: { type: GraphQLString },
-        location: { type: GraphQLString },
         cuisine: { type: GraphQLString },
-        filename: { type: GraphQLString },
         deliverymode: { type: GraphQLString },
       },
       resolve(parent, args) {
-        return customersModel.findByIdAndUpdate(args.id, args);
+        return Model.restaurantsModel.findByIdAndUpdate(args.id, args);
       },
     },
     customerLogin: {
@@ -265,6 +261,8 @@ const Mutation = new GraphQLObjectType({
         description: { type: GraphQLString },
         ingredients: { type: GraphQLString },
         price: { type: GraphQLString },
+        restaurantId: { type: GraphQLString },
+        category: { type: GraphQLString },
       },
       resolve(parent, args) {
         const dish = new dishesModel({
@@ -272,6 +270,8 @@ const Mutation = new GraphQLObjectType({
           description: args.description,
           ingredients: args.ingredients,
           price: args.price,
+          restaurantId: args.restaurantId,
+          category: args.category,
         });
         return dish.save();
       },

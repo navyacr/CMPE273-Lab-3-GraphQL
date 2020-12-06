@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import backendServer from '../../config';
 import { getCustomerOne } from '../../queries/queries';
 import { graphql } from 'react-apollo';
 
@@ -46,7 +45,8 @@ class CustomerProfile extends Component {
 
   render() {
     const id = localStorage.getItem('customer_id');
-    var imgsrc = `${backendServer}/customers/${id}/viewProfileImage`;
+    var imgsrc =
+      'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png';
 
     return (
       <div>
@@ -124,7 +124,6 @@ class CustomerProfile extends Component {
 
 export default graphql(getCustomerOne, {
   options: {
-    // TODO get customer id from localstorage
-    variables: { customer_id: '5fa869a36c8d477f85692574' },
+    variables: { customer_id: localStorage.getItem('customer_id') },
   },
 })(CustomerProfile);

@@ -7,16 +7,11 @@ import { customerLoginMutation } from '../../mutations/mutations';
 const jwt_decode = require('jwt-decode');
 
 class Login extends Component {
-  //call the constructor method
   constructor(props) {
     super(props);
-    //maintain the state required for this component
     this.state = {
-      // cust_username : "",
-      // cust_password : "",
       cust_authFlag: false,
       success: false,
-      // cust_err: ""
     };
   }
 
@@ -27,19 +22,6 @@ class Login extends Component {
   };
 
   onSubmit = async (e) => {
-    //prevent page from refresh
-    // e.preventDefault();
-    // const data = {
-    //     username: this.state.username,
-    //     password: this.state.password
-    // }
-
-    // console.log("data:", data)
-    // this.props.login(data);
-
-    // this.setState({
-    //     signupFlag: 1
-    // });
     e.preventDefault();
     let mutationResponse = await this.props.customerLoginMutation({
       variables: {
@@ -47,9 +29,10 @@ class Login extends Component {
         password: this.state.password,
       },
     });
-    let response = mutationResponse.data.cuslogin;
+    let response = mutationResponse.data.customerLogin;
     console.log('resp:', response);
     if (response) {
+      console.log('Login response:', response);
       if (response.status === '200') {
         this.setState({
           success: true,
@@ -57,6 +40,7 @@ class Login extends Component {
           cust_authFlag: true,
         });
       } else {
+        console.log('error:', response.message);
         this.setState({
           message: response.message,
           cust_authFlag: true,
@@ -68,8 +52,6 @@ class Login extends Component {
   render() {
     let redirectVar = null;
     let message = '';
-    // console.log('Props user value');
-    // console.log(this.props);
     if (this.state.cust_authFlag && this.state.success) {
       localStorage.setItem('token', this.state.data);
       var test = localStorage.getItem('token');
@@ -77,10 +59,10 @@ class Login extends Component {
       var decoded = jwt_decode(this.state.data.split(' ')[1]);
       console.log(
         'id and name from token: ',
-        decoded._id + decoded.name + decoded.type
+        decoded._id + decoded.name + decoded.email
       );
-      localStorage.setItem('customer_id', this.state.data._id);
-      localStorage.setItem('customer_name', this.state.data.name);
+      localStorage.setItem('customer_id', decoded._id);
+      localStorage.setItem('customer_name', decoded.name);
       localStorage.setItem('type', 'customer');
 
       alert('Logged in successfully');
@@ -92,7 +74,6 @@ class Login extends Component {
     ) {
       message = 'Invalid username or password';
     }
-
     return (
       <div>
         {redirectVar}
@@ -108,7 +89,7 @@ class Login extends Component {
                   onChange={this.onChange}
                   type='text'
                   class='form-control'
-                  name='username'
+                  name='email'
                   placeholder='Username'
                   required
                 />
@@ -149,18 +130,6 @@ class Login extends Component {
     );
   }
 }
-//export Login Component
-// export default Login;
-
-// Login.propTypes = {
-//   login: PropTypes.func.isRequired,
-//   user: PropTypes.object.isRequired,
-// };
-
-// const mapStateToProps = (state) => ({
-//   user: state.login.user,
-// });
-// export default connect(mapStateToProps, { login })(Login);
 
 export default graphql(customerLoginMutation, {
   name: 'customerLoginMutation',

@@ -29,7 +29,6 @@ class CustomersSignup extends Component {
   };
 
   onSubmit = async (e) => {
-    //prevent page from refresh
     e.preventDefault();
     let mutationResponse = await this.props.addCustomerMutation({
       variables: {
@@ -53,8 +52,6 @@ class CustomersSignup extends Component {
         });
       }
     }
-
-    // this.props.customersSignup(data);
   };
 
   render() {

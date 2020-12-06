@@ -34,6 +34,9 @@ class RestaurantViewOrders extends Component {
       console.log('Loading');
     } else {
       console.log('Grapghql data:', data);
+      this.setState({
+        orders: this.props.data,
+      });
     }
   };
   componentWillReceiveProps(props) {
@@ -204,7 +207,6 @@ class RestaurantViewOrders extends Component {
 
 export default graphql(getRestaurantOrders, {
   options: {
-    // TODO get customer id from localstorage
-    variables: { restaurant_id: '5fa8a988a794c64564df6d17' },
+    variables: { restaurant_id: localStorage.getItem('restaurant_id') },
   },
 })(RestaurantViewOrders);

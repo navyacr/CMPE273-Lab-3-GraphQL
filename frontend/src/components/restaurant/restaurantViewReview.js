@@ -16,6 +16,9 @@ class RestaurantViewReview extends Component {
 
   getReviews = () => {
     var data = this.props.data;
+    this.setState({
+      reviews: this.props.data,
+    });
     if (data.loading) {
       console.log('Loading');
     } else {
@@ -85,7 +88,7 @@ class RestaurantViewReview extends Component {
 
 export default graphql(getRestaurantOne, {
   options: {
-    // TODO get customer id from localstorage
-    variables: { restaurant_id: '5fa85cdb0f0d477c9147c39f' },
+    variables: { restaurant_id: localStorage.getItem('restaurant_id') },
+    // fetchPolicy: 'network-only',
   },
 })(RestaurantViewReview);

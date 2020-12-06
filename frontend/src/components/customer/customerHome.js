@@ -1,26 +1,26 @@
-import React, { Component } from "react";
-import "../../App.css";
-import axios from "axios";
-import backendServer from "../../config";
-import { Card } from "react-bootstrap";
-import CustomerLoginCheck from "./customerLoginCheck";
-import AggregateReview from "./aggregateReview";
-import Dropdown from "react-dropdown";
-import "react-dropdown/style.css";
+import React, { Component } from 'react';
+import '../../App.css';
+import axios from 'axios';
+import backendServer from '../../config';
+import { Card } from 'react-bootstrap';
+import CustomerLoginCheck from './customerLoginCheck';
+import AggregateReview from './aggregateReview';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 // import PropTypes from "prop-types";
 // import { connect } from "react-redux";
 // import { getRestaurants } from "../../actions/customerHomeActions";
-import ReactPaginate from "react-paginate";
-import "../restaurant/pagination.css";
-import MapContainer from "./mapComponent";
-import { getRestaurantAll } from "../../queries/queries";
-import { graphql } from "react-apollo";
+import ReactPaginate from 'react-paginate';
+import '../restaurant/pagination.css';
+import MapContainer from './mapComponent';
+import { getRestaurantAll } from '../../queries/queries';
+import { graphql } from 'react-apollo';
 
 const buttons = [
-  { name: "All", value: "all" },
-  { name: "Dinein", value: "Dinein" },
-  { name: "Curbside Pickup", value: "Pickup" },
-  { name: "Yelp Delivery", value: "Delivery" },
+  { name: 'All', value: 'all' },
+  { name: 'Dinein', value: 'Dinein' },
+  { name: 'Curbside Pickup', value: 'Pickup' },
+  { name: 'Yelp Delivery', value: 'Delivery' },
 ];
 
 class CustomerHome extends Component {
@@ -36,7 +36,7 @@ class CustomerHome extends Component {
     this.getRestaurants();
     // this.search = this.search.bind(this);
     // this.setCount = this.setCount.bind(this);
-    localStorage.setItem("type", "customer");
+    localStorage.setItem('type', 'customer');
   }
 
   componentDidMount() {
@@ -47,9 +47,9 @@ class CustomerHome extends Component {
 
   handleClick = (name) => {
     console.log(name);
-    var re = new RegExp(name, "gi");
+    var re = new RegExp(name, 'gi');
     let filteredData = [];
-    if (name === "all") {
+    if (name === 'all') {
       this.setState({ restaurants: this.state.allrestaurants });
       return;
     }
@@ -57,7 +57,7 @@ class CustomerHome extends Component {
       (restaurants) =>
         restaurants.deliverymode && restaurants.deliverymode.match(re)
     );
-    console.log("Filtered data: ", filteredData);
+    console.log('Filtered data: ', filteredData);
     this.setState({ restaurants: filteredData });
   };
 
@@ -70,7 +70,7 @@ class CustomerHome extends Component {
     axios
       .post(`${backendServer}/customers/restaurantsearch`, params)
       .then((response) => {
-        console.log("Show Response: ", response);
+        console.log('Show Response: ', response);
         this.setState({
           restaurants: response.data.updatedList,
         });
@@ -91,32 +91,32 @@ class CustomerHome extends Component {
       disabled: false,
       type: e.value,
     });
-    console.log("Priting e: ", e);
-    if (e && e.value === "deliverymode") {
+    console.log('Priting e: ', e);
+    if (e && e.value === 'deliverymode') {
       this.setState({
         secondoptions: [
-          { value: "Dinein", label: "Dine In" },
-          { value: "Pickup", label: "Curbside Pickup" },
-          { value: "Delivery", label: "Yelp Delivery" },
+          { value: 'Dinein', label: 'Dine In' },
+          { value: 'Pickup', label: 'Curbside Pickup' },
+          { value: 'Delivery', label: 'Yelp Delivery' },
         ],
       });
-    } else if (e && e.value === "cuisine") {
+    } else if (e && e.value === 'cuisine') {
       this.setState({
         secondoptions: [
-          { value: "French", label: "French" },
-          { value: "Mexican", label: "Mexican" },
-          { value: "Mediterranean", label: "Mediterranean" },
-          { value: "Indian", label: "Indian" },
+          { value: 'French', label: 'French' },
+          { value: 'Mexican', label: 'Mexican' },
+          { value: 'Mediterranean', label: 'Mediterranean' },
+          { value: 'Indian', label: 'Indian' },
         ],
       });
     } else if (
       e &&
-      (e.value === "location" ||
-        e.value === "dishname" ||
-        e.value === "restaurantname")
+      (e.value === 'location' ||
+        e.value === 'dishname' ||
+        e.value === 'restaurantname')
     ) {
       this.setState({
-        textbox: <input type="text" onChange={this._onInputChange} />,
+        textbox: <input type='text' onChange={this._onInputChange} />,
       });
       this.setState({
         disabled: true,
@@ -125,7 +125,7 @@ class CustomerHome extends Component {
   };
 
   componentWillReceiveProps(nextProp) {
-    console.log("Next prop", nextProp);
+    console.log('Next prop', nextProp);
     if (!nextProp.data.loading) {
       this.setState({
         restaurants: nextProp.data.getRestaurants,
@@ -137,9 +137,9 @@ class CustomerHome extends Component {
   getRestaurants = () => {
     var data = this.props.data;
     if (data.loading) {
-      console.log("Loading");
+      console.log('Loading');
     } else {
-      console.log("Grapghql data:", data);
+      console.log('Grapghql data:', data);
     }
     // console.log("Grapghql data:", data);
     // this.setState({
@@ -155,7 +155,7 @@ class CustomerHome extends Component {
     //     allrestaurants: response.data.updatedList,
     //   });
     // });
-    console.log("State:", this.state);
+    console.log('State:', this.state);
   };
 
   setCount = (count) => {
@@ -177,47 +177,42 @@ class CustomerHome extends Component {
       return <div></div>;
     }
     const options = [
-      { value: "cuisine", label: "Cuisine" },
-      { value: "deliverymode", label: "Mode of Delivery" },
-      { value: "location", label: "Location" },
-      { value: "dishname", label: "Dish Name" },
-      { value: "restaurantname", label: "Restaurant Name" },
+      { value: 'cuisine', label: 'Cuisine' },
+      { value: 'deliverymode', label: 'Mode of Delivery' },
+      { value: 'location', label: 'Location' },
+      { value: 'dishname', label: 'Dish Name' },
+      { value: 'restaurantname', label: 'Restaurant Name' },
     ];
     const defaultOption = options[4];
 
     const count = this.state.restaurants.length;
-    console.log("restaurants: ", this.state.restaurants);
+    console.log('restaurants: ', this.state.restaurants);
     const slice = this.state.restaurants.slice(
       this.state.offset,
       this.state.offset + this.state.perPage
     );
 
-    console.log("slice is:", slice);
+    console.log('slice is:', slice);
     const testResult = slice.map((item, key) => (
-      <div class="row">
+      <div class='row'>
         <Card
-          border="info"
-          border-width="10px"
-          style={{ width: "100%", color: "black" }}
+          border='info'
+          border-width='10px'
+          style={{ width: '100%', color: 'black' }}
         >
           <Card.Body>
-            <div class="d-flex">
-              <div class="mx-auto pull-left">
+            <div class='d-flex'>
+              <div class='mx-auto pull-left'>
                 <Card.Img
-                  variant="top"
-                  class="dish-image"
-                  src={
-                    backendServer +
-                    "/restaurants/" +
-                    item._id +
-                    "/viewProfileImage"
-                  }
+                  variant='top'
+                  class='dish-image'
+                  src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7yiIOd_OGTbphE5u2T6XuFXqeHxMyw20MgQ&usqp=CAU'
                 ></Card.Img>
               </div>
-              <div class="mx-auto pull-right">
+              <div class='mx-auto pull-right'>
                 <a
-                  style={{ cursor: "pointer" }}
-                  href={"/oneRestaurantView/" + item._id}
+                  style={{ cursor: 'pointer' }}
+                  href={'/oneRestaurantView/' + item._id}
                 >
                   <Card.Title>
                     <b>{item.name}</b>
@@ -245,9 +240,9 @@ class CustomerHome extends Component {
     ));
     let paginationElement = (
       <ReactPaginate
-        previousLabel={"← Previous"}
-        nextLabel={"Next →"}
-        breakLabel={<span className="gap">...</span>}
+        previousLabel={'← Previous'}
+        nextLabel={'Next →'}
+        breakLabel={<span className='gap'>...</span>}
         pageCount={
           Math.ceil(this.state.restaurants.length / this.state.perPage) > 1
             ? Math.ceil(this.state.restaurants.length / this.state.perPage)
@@ -255,11 +250,11 @@ class CustomerHome extends Component {
         }
         onPageChange={this.handlePageClick}
         forcePage={this.state.currentPage}
-        containerClassName={"pagination"}
-        previousLinkClassName={"previous_page"}
-        nextLinkClassName={"next_page"}
-        disabledClassName={"disabled"}
-        activeClassName={"active"}
+        containerClassName={'pagination'}
+        previousLinkClassName={'previous_page'}
+        nextLinkClassName={'next_page'}
+        disabledClassName={'disabled'}
+        activeClassName={'active'}
       />
     );
 
@@ -297,13 +292,13 @@ class CustomerHome extends Component {
       <div>
         {/* <CustomerLoginCheck /> */}
 
-        <table class="searchtable">
+        <table class='searchtable'>
           <tr>
             <td>
               <Dropdown
                 options={options}
                 onChange={this._onSelect}
-                placeholder="Search by"
+                placeholder='Search by'
               />
             </td>
             <td>
@@ -311,7 +306,7 @@ class CustomerHome extends Component {
                 <Dropdown
                   options={this.state.secondoptions}
                   onChange={this._onValueSelect}
-                  placeholder="Select"
+                  placeholder='Select'
                 />
               </div>
             </td>
@@ -319,8 +314,8 @@ class CustomerHome extends Component {
           <tr>
             <td>{this.state.textbox}</td>
             <td>
-              <button class="icon" onClick={this.search}>
-                <i class="glyphicon glyphicon-search"></i>
+              <button class='icon' onClick={this.search}>
+                <i class='glyphicon glyphicon-search'></i>
               </button>
             </td>
           </tr>
@@ -329,7 +324,7 @@ class CustomerHome extends Component {
         <div>
           {buttons.map(({ name, value }) => (
             <button
-              class="btn btn-primary pad"
+              class='btn btn-primary pad'
               key={name}
               value={value}
               onClick={this.handleClick.bind(this, value)}
@@ -338,20 +333,20 @@ class CustomerHome extends Component {
             </button>
           ))}
         </div>
-        <div class="header_menu">
-          <div class="links">
+        <div class='header_menu'>
+          <div class='links'>
             {/* {data} */}
-            <div className="panel">
-              <div className="panel-body">
+            <div className='panel'>
+              <div className='panel-body'>
                 <div>{testResult}</div>
               </div>
               {paginationElement}
             </div>
           </div>
-          <div class="social_media">
+          <div class='social_media'>
             <MapContainer restaurants={this.state.restaurants} />
           </div>
-          <div class="clearfix"></div>
+          <div class='clearfix'></div>
         </div>
       </div>
     );

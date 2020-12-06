@@ -6,9 +6,10 @@ import store from './store';
 import Main from './components/Main';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import backendServer from './config';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3001/graphql'
+  uri: `${backendServer}/graphql`,
 });
 
 function App() {
@@ -19,8 +20,7 @@ function App() {
           <Main />
         </BrowserRouter>
       </div>
-      </ApolloProvider>
+    </ApolloProvider>
   );
 }
-// Export the App component so that it can be used in index.js
 export default App;
