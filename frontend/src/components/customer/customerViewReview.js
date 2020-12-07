@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import "../../App.css";
-import { Card } from "react-bootstrap";
+import React, { Component } from 'react';
+import '../../App.css';
+import { Card } from 'react-bootstrap';
 // import CustomerLoginCheck from "./customerLoginCheck";
-import StarRatings from "react-star-ratings";
-import { getRestaurantOne } from "../../queries/queries";
-import { graphql } from "react-apollo";
+import StarRatings from 'react-star-ratings';
+import { getRestaurantOne } from '../../queries/queries';
+import { graphql, withApollo } from 'react-apollo';
 
 class CustomerViewReview extends Component {
   constructor(props) {
@@ -15,20 +15,28 @@ class CustomerViewReview extends Component {
     this.getReviews();
   }
 
-  componentWillReceiveProps(props) {
-    console.log("props in review", props);
-    this.setState({
-      ...this.state,
-      reviews: props.data.getRestaurant.reviews,
-    });
-  }
+  // componentWillReceiveProps(props) {
+  //   console.log('props in review', props);
+  //   this.setState({
+  //     ...this.state,
+  //     reviews: props.data.getRestaurant.reviews,
+  //   });
+  // }
 
-  getReviews = () => {
-    var data = this.props.data;
+  getReviews = async () => {
+    const { data } = await this.props.client.query({
+      query: getRestaurantOne,
+      variables: { restaurant_id: this.props.resid },
+      // fetchPolicy: 'no-cache',
+    });
+    this.setState({
+      reviews: data.getRestaurant.reviews,
+    });
+    // var data = this.props.data;
     if (data.loading) {
-      console.log("Loading");
+      console.log('Loading');
     } else {
-      console.log("Grapghql data:", data);
+      console.log('Grapghql data:', data);
     }
   };
 
@@ -38,7 +46,7 @@ class CustomerViewReview extends Component {
     if (this.state && this.state.reviews && this.state.reviews.length > 0) {
       for (let i = 0; i < this.state.reviews.length; i++) {
         data.push(
-          <Card border="info" style={{ width: "40%" }}>
+          <Card border='info' style={{ width: '40%' }}>
             <Card.Body>
               <Card.Title>
                 <b>{this.state.reviews[i].customerName}</b>
@@ -46,16 +54,16 @@ class CustomerViewReview extends Component {
               <Card.Text>
                 <StarRatings
                   rating={Number(this.state.reviews[i].rating)}
-                  starRatedColor="orange"
-                  starDimension="15px"
-                  starSpacing="2px"
+                  starRatedColor='orange'
+                  starDimension='15px'
+                  starSpacing='2px'
                   numberOfStars={5}
-                  changeRating=""
-                  name="rating"
+                  changeRating=''
+                  name='rating'
                 />
               </Card.Text>
               <Card.Text>
-                <b> Date: </b> {this.state.reviews[i].date.split("T")[0]}
+                <b> Date: </b> {this.state.reviews[i].date.split('T')[0]}
               </Card.Text>
               <Card.Text>
                 <b> Description: </b> {this.state.reviews[i].description}
@@ -78,9 +86,11 @@ class CustomerViewReview extends Component {
   }
 }
 
-export default graphql(getRestaurantOne, {
-  options: {
-    // TODO
-    variables: { restaurant_id: "5fa85cdb0f0d477c9147c39f" },
-  },
-})(CustomerViewReview);
+// export default graphql(getRestaurantOne, {
+//   options: {
+//     // TODO
+//     variables: { restaurant_id: "5fa85cdb0f0d477c9147c39f" },
+//   },
+// })(CustomerViewReview);
+
+export default withApollo(CustomerViewReview);

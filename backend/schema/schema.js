@@ -14,6 +14,7 @@ const {
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLInputObjectType,
 } = graphql;
 
 const RestaurantType = new GraphQLObjectType({
@@ -79,11 +80,31 @@ const DishType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     ingredients: { type: GraphQLString },
-    filename: { type: GraphQLString },
     description: { type: GraphQLString },
     category: { type: GraphQLString },
     price: { type: GraphQLString },
     restaurantId: { type: RestaurantType },
+  }),
+});
+
+const DishInputType = new GraphQLInputObjectType({
+  name: 'dishInput',
+  fields: () => ({
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    ingredients: { type: GraphQLString },
+    description: { type: GraphQLString },
+    category: { type: GraphQLString },
+    price: { type: GraphQLString },
+    restaurantId: { type: GraphQLString },
+  }),
+});
+
+const ItemType = new GraphQLInputObjectType({
+  name: 'items',
+  fields: () => ({
+    dish: { type: DishInputType },
+    qty: { type: GraphQLString },
   }),
 });
 
@@ -125,6 +146,15 @@ const RootQuery = new GraphQLObjectType({
       args: {},
       resolve(parent, args) {
         return Model.restaurantsModel.find({});
+      },
+    },
+    searchRestaurants: {
+      type: new GraphQLList(RestaurantType),
+      args: { keyword: { type: GraphQLString } },
+      resolve(parent, args) {
+        return Model.restaurantsModel.find({
+          name: new RegExp(args.keyword, 'i'),
+        });
       },
     },
     getCustomer: {
@@ -274,6 +304,53 @@ const Mutation = new GraphQLObjectType({
           category: args.category,
         });
         return dish.save();
+      },
+    },
+    updateOrder: {
+      type: StatusType,
+      args: {
+        orderId: { type: GraphQLString },
+        status: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        let err,
+          updated_order = await ordersModel.findByIdAndUpdate(args.orderId, {
+            status: args.status,
+          });
+        if (err) {
+          return { status: 500, message: 'ERROR' };
+        } else {
+          return { status: 200, message: 'STATUS_UPDATED' };
+        }
+      },
+    },
+    placeOrder: {
+      type: StatusType,
+      args: {
+        customerId: { type: GraphQLString },
+        restaurantId: { type: GraphQLString },
+        dishId: { type: GraphQLString },
+        qty: { type: GraphQLString },
+        dm: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        var dish = args.items;
+
+        let neworder = new ordersModel({
+          dishId: args.dishId,
+          restaurantId: args.restaurantId,
+          customerId: args.customerId,
+          qty: args.qty,
+          dm: args.dm,
+          status: 'Order Received',
+        });
+        let saved = await neworder.save();
+        console.log('Saved:', saved);
+        if (saved) {
+          return { status: 200, message: 'ORDER_PLACED' };
+        } else {
+          return { status: 500, message: 'ERROR' };
+        }
       },
     },
   },

@@ -212,13 +212,13 @@ class CustomerHome extends Component {
               <div class='mx-auto pull-right'>
                 <a
                   style={{ cursor: 'pointer' }}
-                  href={'/oneRestaurantView/' + item._id}
+                  href={'/oneRestaurantView/' + item.id}
                 >
                   <Card.Title>
                     <b>{item.name}</b>
                   </Card.Title>
                 </a>
-                <AggregateReview resid={item._id} />
+                <AggregateReview resid={item.id} />
 
                 <Card.Text>
                   <b> Delivery modes: </b> {item.deliverymode}

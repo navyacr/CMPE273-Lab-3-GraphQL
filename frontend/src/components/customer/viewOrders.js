@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import "../../App.css";
-import axios from "axios";
-import backendServer from "../../config";
-import { Card } from "react-bootstrap";
-import ReactPaginate from "react-paginate";
-import { getOrdersCustomer } from "../../queries/queries";
-import { graphql } from "react-apollo";
+import React, { Component } from 'react';
+import '../../App.css';
+import axios from 'axios';
+import backendServer from '../../config';
+import { Card } from 'react-bootstrap';
+import ReactPaginate from 'react-paginate';
+import { getOrdersCustomer } from '../../queries/queries';
+import { graphql } from 'react-apollo';
 
 const buttons = [
-  { name: "All", value: "all" },
-  { name: "Preparing", value: "Preparing" },
-  { name: "On the way", value: "On the way" },
-  { name: "Delivered", value: "Delivered" },
-  { name: "Pick up Ready", value: "Pick up Ready" },
-  { name: "Picked up", value: "Picked up" },
-  { name: "Cancelled", value: "Cancelled" },
+  { name: 'All', value: 'all' },
+  { name: 'Preparing', value: 'Preparing' },
+  { name: 'On the way', value: 'On the way' },
+  { name: 'Delivered', value: 'Delivered' },
+  { name: 'Pick up Ready', value: 'Pick up Ready' },
+  { name: 'Picked up', value: 'Picked up' },
+  { name: 'Cancelled', value: 'Cancelled' },
 ];
 
 class ViewOrders extends Component {
@@ -40,16 +40,16 @@ class ViewOrders extends Component {
     });
   };
   cancel = (e) => {
-    console.log("Cancelled: ", e.target.value);
+    console.log('Cancelled: ', e.target.value);
     axios
       .get(`${backendServer}/customers/${e.target.value}/cancelOrder`)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
-          alert("You have cancelled the order.");
+          alert('You have cancelled the order.');
           this.getOrders();
         } else {
-          alert("Oops!! something went wrong, Try again.");
+          alert('Oops!! something went wrong, Try again.');
         }
       });
   };
@@ -60,7 +60,7 @@ class ViewOrders extends Component {
   }
   handleClick = (name) => {
     let filteredData = [];
-    if (name === "all") {
+    if (name === 'all') {
       this.setState({ orders: this.state.allorders });
       return;
     }
@@ -68,16 +68,16 @@ class ViewOrders extends Component {
       (orders) => orders.status === name
     );
 
-    console.log("Filtered data: ", filteredData);
+    console.log('Filtered data: ', filteredData);
     this.setState({ orders: filteredData });
   };
 
   getOrders = () => {
     var data = this.props.data;
     if (data.loading) {
-      console.log("Loading");
+      console.log('Loading');
     } else {
-      console.log("Grapghql data:", data);
+      console.log('Grapghql data:', data);
     }
   };
 
@@ -88,11 +88,11 @@ class ViewOrders extends Component {
   //     allorders: props.user,
   //     pageCount: Math.ceil(this.state.orders.length / this.state.perPage),
   //   });
-  //   console.log("Page count?", this.state.pageCount);
+  //   console.log('Page count?', this.state.pageCount);
   // }
 
   componentWillReceiveProps(nextProp) {
-    console.log("Next prop", nextProp);
+    console.log('Next prop', nextProp);
     if (!nextProp.data.loading) {
       this.setState({
         orders: nextProp.data.getOrders,
@@ -104,30 +104,30 @@ class ViewOrders extends Component {
 
   render() {
     const count = this.state.orders.length;
-    console.log("orders: ", this.props.user);
+    console.log('orders: ', this.props.user);
     const slice = this.state.orders.slice(
       this.state.offset,
       this.state.offset + this.state.perPage
     );
     const testResult = slice.map((item, key) => (
-      <div class="row">
+      <div class='row'>
         <Card
-          border="info"
-          border-width="10px"
-          style={{ width: "60%", color: "black" }}
+          border='info'
+          border-width='10px'
+          style={{ width: '60%', color: 'black' }}
         >
           <Card.Body>
-            <div class="d-flex">
-              <div class="mx-auto pull-left">
+            <div class='d-flex'>
+              <div class='mx-auto pull-left'>
                 <Card.Img
-                  variant="top"
-                  class="dish-image"
+                  variant='top'
+                  class='dish-image'
                   src={
-                    backendServer + "/restaurants/" + item.dishId + "/dishImage"
+                    backendServer + '/restaurants/' + item.dishId + '/dishImage'
                   }
                 ></Card.Img>
               </div>
-              <div class="mx-auto pull-right">
+              <div class='mx-auto pull-right'>
                 <Card.Title>
                   <b>{item.name}</b>
                 </Card.Title>
@@ -142,20 +142,20 @@ class ViewOrders extends Component {
                   <b> Price: </b> {item.dishId.price} USD
                 </Card.Text>
                 <Card.Text>
-                  <b> Quantity: </b> {item.qty}{" "}
+                  <b> Quantity: </b> {item.qty}{' '}
                 </Card.Text>
                 <Card.Text>
-                  <b> Status: </b> {item.status}{" "}
+                  <b> Status: </b> {item.status}{' '}
                 </Card.Text>
                 <Card.Text>
-                  <b> Date: </b> {item.date.split("T")[0]}{" "}
+                  <b> Date: </b> {item.date.split('T')[0]}{' '}
                 </Card.Text>
                 <Card.Text>
-                  <b> Time: </b> {item.date.split("T")[1]}{" "}
+                  <b> Time: </b> {item.date.split('T')[1]}{' '}
                 </Card.Text>
 
                 <button
-                  class="btn btn-primary"
+                  class='btn btn-primary'
                   value={item._id}
                   onClick={this.cancel}
                 >
@@ -172,9 +172,9 @@ class ViewOrders extends Component {
     ));
     let paginationElement = (
       <ReactPaginate
-        previousLabel={"← Previous"}
-        nextLabel={"Next →"}
-        breakLabel={<span className="gap">...</span>}
+        previousLabel={'← Previous'}
+        nextLabel={'Next →'}
+        breakLabel={<span className='gap'>...</span>}
         pageCount={
           Math.ceil(this.state.orders.length / this.state.perPage) > 1
             ? Math.ceil(this.state.orders.length / this.state.perPage)
@@ -182,11 +182,11 @@ class ViewOrders extends Component {
         }
         onPageChange={this.handlePageClick}
         forcePage={this.state.currentPage}
-        containerClassName={"pagination"}
-        previousLinkClassName={"previous_page"}
-        nextLinkClassName={"next_page"}
-        disabledClassName={"disabled"}
-        activeClassName={"active"}
+        containerClassName={'pagination'}
+        previousLinkClassName={'previous_page'}
+        nextLinkClassName={'next_page'}
+        disabledClassName={'disabled'}
+        activeClassName={'active'}
       />
     );
 
@@ -195,7 +195,7 @@ class ViewOrders extends Component {
         <div>
           {buttons.map(({ name, value }) => (
             <button
-              class="btn btn-primary pad"
+              class='btn btn-primary pad'
               key={name}
               value={value}
               onClick={this.handleClick.bind(this, value)}
@@ -204,8 +204,8 @@ class ViewOrders extends Component {
             </button>
           ))}
         </div>
-        <div className="panel">
-          <div className="panel-body">
+        <div className='panel'>
+          <div className='panel-body'>
             <div>{testResult}</div>
           </div>
           {paginationElement}
@@ -217,6 +217,6 @@ class ViewOrders extends Component {
 
 export default graphql(getOrdersCustomer, {
   options: {
-    variables: { customer_id: "5fa8b6dc7b4084470787a0d6" },
+    variables: { customer_id: localStorage.getItem('customer_id') },
   },
 })(ViewOrders);

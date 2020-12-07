@@ -130,6 +130,26 @@ const updateCustomerMutation = gql`
     }
   }
 `;
+const placeOrderMutation = gql`
+  mutation PlaceOrder(
+    $customerId: String
+    $dm: String
+    $restaurantId: String
+    $dishId: String
+    $qty: String
+  ) {
+    placeOrder(
+      customerId: $customerId
+      dm: $dm
+      restaurantId: $restaurantId
+      dishId: $dishId
+      qty: $qty
+    ) {
+      status
+      message
+    }
+  }
+`;
 export {
   addCustomerMutation,
   customerLoginMutation,
@@ -138,4 +158,5 @@ export {
   addMenuMutation,
   updateRestaurantMutation,
   updateCustomerMutation,
+  placeOrderMutation,
 };

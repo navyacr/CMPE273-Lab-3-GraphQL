@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost';
 const getRestaurantAll = gql`
   {
     getRestaurants {
+      id
       name
       cuisine
       deliverymode

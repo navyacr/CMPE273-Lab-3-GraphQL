@@ -1,16 +1,17 @@
-import React, { Component } from "react";
-import "../../App.css";
-import axios from "axios";
-import backendServer from "../../config";
-import { Card } from "react-bootstrap";
-import ReactPaginate from "react-paginate";
-import "../restaurant/pagination.css";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import '../../App.css';
+// import axios from 'axios';
+import backendServer from '../../config';
+import { Card } from 'react-bootstrap';
+import ReactPaginate from 'react-paginate';
+import '../restaurant/pagination.css';
+// import PropTypes from 'prop-types';
 // import { connect } from "react-redux";
 // import { getRestaurantMenu } from "../../actions/customerHomeActions";
-import { placeOrder } from "../../actions/customerHomeActions";
-import { getRestaurantMenu } from "../../queries/queries";
-import { graphql } from "react-apollo";
+import { placeOrder } from '../../actions/customerHomeActions';
+import { getRestaurantMenu } from '../../queries/queries';
+import { graphql, withApollo, compose } from 'react-apollo';
+import { placeOrderMutation } from '../../mutations/mutations';
 
 class OneRestaurantMenuView extends Component {
   constructor(props) {
@@ -25,13 +26,29 @@ class OneRestaurantMenuView extends Component {
     this.getRestaurantMenu();
   }
 
-  getRestaurantMenu = () => {
-    console.log("Res id is", this.props);
-    var data = this.props.data;
+  getRestaurantMenu = async () => {
+    console.log('Res id is', this.props);
+    // localStorage.setItem('temp_resid', this.props.resid);
+    // var data = this.props.data;
+    const { data } = await this.props.client.query({
+      query: getRestaurantMenu,
+      variables: { restaurant_id: this.props.resid },
+      // fetchPolicy: 'no-cache',
+    });
+    // this.props.client.query({query:
+    // })
+    this.setState({ dishes: data.getMenu });
+    this.setState({
+      pageCount: Math.ceil(this.state.dishes.length / this.state.perPage),
+    });
+    // this.setState({ perjobarr: data.getJobs });
+    // dishes: props.data.getMenu,
+    //   pageCount: Math.ceil(this.state.dishes.length / this.state.perPage),
     if (data.loading) {
-      console.log("Loading");
+      console.log('Loading');
     } else {
-      console.log("Grapghql data:", data);
+      console.log('Grapghql data:', data);
+      console.log('get Menu resID:', this.props.resid);
     }
     // this.props.getRestaurantMenu(this.props.resid);
     // axios.get(`${backendServer}/restaurants/${this.props.resid}/dishes`)
@@ -42,12 +59,52 @@ class OneRestaurantMenuView extends Component {
     //     console.log("Dishes received:", this.state.dishes)
     // });
   };
-  placeOrder = () => {
-    let customerId = localStorage.getItem("customer_id");
-    console.log("Dishes list: ", this.state.dishes);
-    console.log("customerId: ", customerId);
-    this.props.placeOrder({ dishes: this.state.dishes, dm: this.props.dm });
-    alert("Order placed successfully");
+  placeOrder = async () => {
+    let customerId = localStorage.getItem('customer_id');
+    console.log('Dishes list: ', this.state.dishes);
+    console.log('customerId: ', customerId);
+    console.log('dm:', this.props.dm);
+
+    // const { result } = await this.props.client.mutate({
+    //   mutation: placeOrderMutation,
+    //   variables: {
+    //     customerId: localStorage.getItem('customer_id'),
+    //     dishes: this.state.dishes,
+    //     dm: this.props.dm,
+    //   },
+    //   // fetchPolicy: 'no-cache',
+    // });
+
+    for (var dish of this.state.dishes) {
+      console.log('dish.id:', dish.id);
+      console.log('dish.qty:', dish.qty);
+      if (!dish.qty) {
+        continue;
+      }
+      let mutationResponse = await this.props.placeOrderMutation({
+        variables: {
+          customerId: localStorage.getItem('customer_id'),
+          dishId: dish.id,
+          qty: dish.qty.toString(),
+          dm: this.props.dm,
+          restaurantId: this.props.resid,
+        },
+      });
+      let response = mutationResponse.data.placeOrder;
+      console.log('resp:', response);
+      if (response) {
+        if (response.message === 'ORDER_PLACED') {
+          this.setState({
+            success: true,
+          });
+          alert('Order placed successfully');
+        } else {
+          alert('Error occured!! Try again');
+        }
+      }
+    }
+    // this.props.placeOrder({ dishes: this.state.dishes, dm: this.props.dm });
+    // alert('Order placed successfully');
     // axios.post(`${backendServer}/customers/${customerId}/orders`, {dishes: this.state.dishes, dm: this.props.dm})
     // .then(response => {
     //   console.log(response)
@@ -58,42 +115,43 @@ class OneRestaurantMenuView extends Component {
     //   alert("Error occured. Try again", err)
     // })
   };
-  componentWillReceiveProps(props) {
-    console.log("props:", props);
-    this.setState({
-      ...this.state,
-      dishes: props.data.getMenu,
-      pageCount: Math.ceil(this.state.dishes.length / this.state.perPage),
-    });
-    console.log("Dishes?", this.state.dishes);
-  }
+  // componentWillReceiveProps(props) {
+  //   console.log('props:', props);
+  //   this.setState({
+  //     ...this.state,
+  //     dishes: props.data.getMenu,
+  //     pageCount: Math.ceil(this.state.dishes.length / this.state.perPage),
+  //   });
+  //   console.log('Dishes?', this.state.dishes);
+  // }
 
   render() {
+    localStorage.setItem('temp_resid', this.props.resid);
     const count = this.state.dishes.length;
-    console.log("Dishes: ", this.state.dishes);
+    console.log('Dishes: ', this.state.dishes);
     const slice = this.state.dishes.slice(
       this.state.offset,
       this.state.offset + this.state.perPage
     );
     const testResult = slice.map((item, key) => (
-      <div class="row">
+      <div class='row'>
         <Card
-          border="info"
-          border-width="10px"
-          style={{ width: "60%", color: "black" }}
+          border='info'
+          border-width='10px'
+          style={{ width: '60%', color: 'black' }}
         >
           <Card.Body>
-            <div class="d-flex">
-              <div class="mx-auto pull-left">
+            <div class='d-flex'>
+              <div class='mx-auto pull-left'>
                 <Card.Img
-                  variant="top"
-                  class="dish-image"
+                  variant='top'
+                  class='dish-image'
                   src={
-                    backendServer + "/restaurants/" + item._id + "/dishImage"
+                    backendServer + '/restaurants/' + item._id + '/dishImage'
                   }
                 ></Card.Img>
               </div>
-              <div class="mx-auto pull-right">
+              <div class='mx-auto pull-right'>
                 <Card.Title>
                   <b>{item.name}</b>
                 </Card.Title>
@@ -111,7 +169,7 @@ class OneRestaurantMenuView extends Component {
                   <b> Price: </b> {item.price} USD
                 </Card.Text>
                 <Card.Text>
-                  {" "}
+                  {' '}
                   <div>
                     <span>Quantity</span>
                     <button
@@ -119,7 +177,7 @@ class OneRestaurantMenuView extends Component {
                         if (!item.qty) {
                           item.qty = 0;
                         }
-                        console.log("+", item.qty);
+                        console.log('+', item.qty);
 
                         item.qty += 1;
                         this.forceUpdate();
@@ -131,7 +189,7 @@ class OneRestaurantMenuView extends Component {
                     <button
                       onClick={() => {
                         item.qty > 0 ? (item.qty -= 1) : (item.qty = 0);
-                        console.log("-", item.qty);
+                        console.log('-', item.qty);
                         this.forceUpdate();
                       }}
                     >
@@ -150,9 +208,9 @@ class OneRestaurantMenuView extends Component {
     ));
     let paginationElement = (
       <ReactPaginate
-        previousLabel={"← Previous"}
-        nextLabel={"Next →"}
-        breakLabel={<span className="gap">...</span>}
+        previousLabel={'← Previous'}
+        nextLabel={'Next →'}
+        breakLabel={<span className='gap'>...</span>}
         pageCount={
           Math.ceil(this.state.dishes.length / this.state.perPage) > 1
             ? Math.ceil(this.state.dishes.length / this.state.perPage)
@@ -160,11 +218,11 @@ class OneRestaurantMenuView extends Component {
         }
         onPageChange={this.handlePageClick}
         forcePage={this.state.currentPage}
-        containerClassName={"pagination"}
-        previousLinkClassName={"previous_page"}
-        nextLinkClassName={"next_page"}
-        disabledClassName={"disabled"}
-        activeClassName={"active"}
+        containerClassName={'pagination'}
+        previousLinkClassName={'previous_page'}
+        nextLinkClassName={'next_page'}
+        disabledClassName={'disabled'}
+        activeClassName={'active'}
       />
     );
     //   var data = []
@@ -219,14 +277,14 @@ class OneRestaurantMenuView extends Component {
     return (
       <div>
         {/* {data} */}
-        <div className="panel">
-          <div className="panel-body">
+        <div className='panel'>
+          <div className='panel-body'>
             <div>{testResult}</div>
           </div>
           {paginationElement}
         </div>
-        <button class="btn btn-primary" onClick={this.placeOrder}>
-          {" "}
+        <button class='btn btn-primary' onClick={this.placeOrder}>
+          {' '}
           Place order
         </button>
       </div>
@@ -251,9 +309,28 @@ class OneRestaurantMenuView extends Component {
 //   OneRestaurantMenuView
 // );
 
-export default graphql(getRestaurantMenu, {
-  options: {
-    // TODO get resid from this.props.resid
-    variables: { restaurant_id: "5fa85cdb0f0d477c9147c39f" },
-  },
-})(OneRestaurantMenuView);
+// export default graphql(getRestaurantMenu, {
+//   options: {
+//     // TODO get resid from this.props.resid 5fa8a988a794c64564df6d17
+//     variables: { restaurant_id: '5fa8a988a794c64564df6d17' },
+//   },
+// })(OneRestaurantMenuView);
+
+// export default withApollo(OneRestaurantMenuView);
+// export default graphql(placeOrderMutation, { name: 'placeOrderMutation' })(
+//   OneRestaurantMenuView
+// );
+
+// export default compose(graphql( applyJobMutation,
+//   { name: "applyJobMutation" }),
+//   graphql(
+//   getStudentJobsQuery, {
+//   options: {
+//       variables: { id: null }
+//   }
+// }))(StudentHome);
+
+export default compose(
+  withApollo,
+  graphql(placeOrderMutation, { name: 'placeOrderMutation' })
+)(OneRestaurantMenuView);
