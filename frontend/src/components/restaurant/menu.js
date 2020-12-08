@@ -70,9 +70,7 @@ class RestaurantMenu extends Component {
                 <Card.Img
                   variant='top'
                   class='dish-image'
-                  src={
-                    backendServer + '/restaurants/' + item._id + '/dishImage'
-                  }
+                  src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7yiIOd_OGTbphE5u2T6XuFXqeHxMyw20MgQ&usqp=CAU'
                 ></Card.Img>
               </div>
               <div class='mx-auto pull-right'>

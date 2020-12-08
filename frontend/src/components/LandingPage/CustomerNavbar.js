@@ -32,7 +32,7 @@ class CustomerNavbar extends Component {
               Orders
             </Link>
           </li>
-          <li class='nav-item'>
+          {/* <li class='nav-item'>
             <Link class='nav-link' to='/eventRegister'>
               Events
             </Link>
@@ -53,7 +53,7 @@ class CustomerNavbar extends Component {
             <Link class='nav-link' to='/allCustomers'>
               Users
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
     );

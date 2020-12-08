@@ -3,12 +3,9 @@ import { Link } from 'react-router-dom';
 import cookie from 'react-cookies';
 import { Redirect } from 'react-router';
 
-//create the Navbar Component
 class RestaurantNavbar extends Component {
   constructor(props) {
     super(props);
-    //  TODO : remove this
-    // localStorage.setItem('type', 'restaurant');
   }
 
   render() {
@@ -30,26 +27,26 @@ class RestaurantNavbar extends Component {
               Update Menu
             </Link>
           </li>
-          <li class='nav-item'>
+          {/* <li class='nav-item'>
             <Link class='nav-link' to='/eventView'>
               Events
             </Link>
-          </li>
-          <li class='nav-item'>
+          </li> */}
+          {/* <li class='nav-item'>
             <Link class='nav-link' to='/postEvent'>
               Add Event
             </Link>
-          </li>
+          </li> */}
           <li class='nav-item'>
             <Link class='nav-link' to='/restaurantViewOrders'>
               Orders
             </Link>
           </li>
-          <li class='nav-item'>
+          {/* <li class='nav-item'>
             <Link class='nav-link' to='/allCustomers'>
               Customers List
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
     );
